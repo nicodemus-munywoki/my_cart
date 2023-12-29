@@ -1,0 +1,173 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Archives</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-group me-2">
+      <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addProductModal">+ Add Products</button>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="table-responsive">
+    <table class="table table-success table-sm table-striped">
+        <thead>
+            <tr>
+                <th scope="col">image</th>
+                <th scope="col">ID</th>
+                <th scope="col">Product name</th>
+                <th scope="col">Product Id</th>
+                <th scope="col">Price</th>
+                <th scope="col">InStock</th>
+                <th scope="col" class="text-end">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+          <% products.forEach(element => { %>
+                <tr class="align-middle">
+                    <td><img src="/proxy-image?url=<%= element.imagePath %>" class="p_img"></td>
+                    <td><%= element._id %></td>
+                    <td><%= element.productName %></td>
+                    <td><%= element.P_Id %></td>
+                    <td><%= element.price %></td>
+                    <td><%= element.instock %></td>
+                    <td class="text-end">
+                        <div class="d-flex flex-row justify-content-end gap-2">
+                          <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewProductModal" data-id="<%= element._id %>">
+                            <i class="bi bi-eye"></i>
+                          </a>
+                          
+                          <form action="/edit/<%= element._id %>?_method=DELETE" method="post" class="position-relative">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                  <i class="bi bi-trash"></i>
+                              </button>
+                          </form>
+                        </div>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+<script>
+  document.querySelectorAll('.btn.btn-info.btn-sm').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      event.preventDefault();
+      const targetModalId = event.target.getAttribute('data-bs-target');
+      const productId = event.target.getAttribute('data-id');
+
+      try {
+        // Fetch the product details based on the productId
+        const response = await fetch(`/view/${productId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch product details');
+        }
+
+        const data = await response.text();
+
+        // Use DOMParser to create a Document object
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'text/html');
+
+        // Extract the content from the <main> element
+        const mainContent = doc.querySelector('main').innerHTML;
+
+        // Set the extracted content to the modal body
+        document.querySelector(targetModalId + ' #productDetailsContainer').innerHTML = mainContent;
+        new bootstrap.Modal(document.querySelector(targetModalId)).show();
+      } catch (error) {
+        console.error(error);
+        // Handle errors, e.g., display an error message to the user
+      }
+    });
+  });
+</script>
+
+
+
+<!-- Modal for adding products -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Add your form for adding products here -->
+        <form action="/admin/add" method="post">
+          <div class="row mb-3">
+            <!-- Image URL -->
+            <div class="col">
+              <label for="imageUrl" class="form-label">Image URL</label>
+              <input type="text" class="form-control" id="imageUrl" name="imagePath" required>
+            </div>
+            <!-- Product Name -->
+            <div class="col">
+              <label for="productName" class="form-label">Product Name</label>
+              <input type="text" class="form-control" id="productName" name="productName" required>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <!-- Price -->
+            <div class="col">
+              <label for="price" class="form-label">Price</label>
+              <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <!-- Category (Assuming a select dropdown) -->
+            <div class="col">
+              <label for="category" class="form-label">Category</label>
+              <select class="form-select" id="category" name="category" required>
+                <!-- Add your category options here -->
+                <option value="category1">Category 1</option>
+                <option value="category2">Category 2</option>
+                <!-- Add more options as needed -->
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <!-- Quantity (Instock) -->
+            <div class="col">
+              <label for="quantity" class="form-label">Quantity (Instock)</label>
+              <input type="number" class="form-control" id="quantity" name="instock" required>
+            </div>
+            <!-- Add other form fields as needed -->
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Add Product</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for editing products -->
+
+<!-- views/viewProduct.ejs -->
+
+<!-- Modal -->
+
+<!-- views/viewProduct.ejs -->
+
+<!-- Modal -->
+
+<div class="modal fade" id="viewProductModal" tabindex="-1" aria-labelledby="viewProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewProductModalLabel">View Product Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Product details will be loaded here dynamically -->
+        <div id="productDetailsContainer"></div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

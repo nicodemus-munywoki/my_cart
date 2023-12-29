@@ -1,0 +1,39 @@
+<!-- views/viewProductDetails.ejs -->
+
+<div id="productDetailsContainer">
+  <div class="mb-2">
+    <strong>Image:</strong>
+    <span id="viewImageUrl"></span>
+  </div>
+  <div class="mb-2">
+    <strong>ID:</strong>
+    <span id="viewProductId"><%= product._id %></span>
+  </div>
+  <div class="mb-2">
+    <strong>Product Name:</strong>
+    <span id="viewProductName" class="edit-field" data-field="Product Name">
+      <%= product.productName %>
+      <i class="bi bi-pencil"></i>
+    </span>
+  </div>
+  <div class="mb-2">
+    <strong>Price:</strong>
+    <span id="viewPrice" class="edit-field" data-field="Price">
+      <%= product.price %>
+      <i class="bi bi-pencil"></i>
+    </span>
+  </div>
+  <div class="mb-2">
+    <strong>Category:</strong>
+    <span id="viewCategory" class="edit-field" data-field="Category">
+      <%= product.category %>
+    </span>
+  </div>
+  <div class="mb-2">
+    <strong>Quantity (Instock):</strong>
+    <span id="viewQuantity" class="edit-field" data-field="Quantity (Instock)">
+      <%= product.ins %>
+      <i class="bi bi-pencil"></i>
+    </span>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+{
+  "files": {
+    "README.md": [
+      {
+        "id": "5090124b-c6cd-451a-983c-359c467ed14a",
+        "line": 3,
+        "version": 1,
+        "index": 49
+      }
+    ],
+    "server/controller/userController.js": [
+      {
+        "id": "e94ffcd2-9fb6-4d75-b56a-12699a571474",
+        "line": 38,
+        "version": 540,
+        "index": 949
+      }
+    ]
+  }
+}
