@@ -1,0 +1,61 @@
+<% if (products && products.length > 0) { %>
+  <div class="row justify-content-center">
+    <div class="col-sm-2 col-md-4">
+      <div class="card">
+        <i class="bi bi-cart4 fs-1 text-center text-success"></i>
+        <div class="caption text-center">
+          <h3>MY CART</h3>
+        </div>
+      
+        <table class="table table-borderless">
+          <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Product</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price</th>
+            <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% products.forEach((element, index) => { %>
+              <tr>
+                <td scope="row"><%= index + 1 %></td>
+                <td><%= element.item.productName %></td>
+                <td><%= element.qty %></td> <!-- Add your quantity logic here -->
+                <td><%= formatNumber(element.price) %></td>
+                <td>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  Action
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="/reduce/<%= element._id %>" class="dropdown-item text-secondary"><i class="fa-solid fa-cart-minus"></i> Reduce</a></li>
+                    <li><a href="/remove/<%= element._id %>" class="dropdown-item text-danger"><i class="fa-solid fa-cart-circle-xmark"></i> Remove</a></li>
+                  </ul>
+                </div>
+                </td>
+              </tr>
+            <% }) %>
+            <tr>
+              <td></td>
+              <td><strong>Total:</strong></td>
+              <td><strong><%= session.cart.totalQty %></strong></td>
+              <td><strong><%= formatNumber(totalPrice) %></strong></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      <div class="text-center">
+      <a href="/confirm" type="button" class="btn btn-success">Checkout</a>
+      </div>
+      </div>
+    </div>
+  </div>
+<% } else { %>
+  <div class="row">
+    <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
+      <h2>No items in the cart!</h2>
+    </div>
+  </div>
+<% } %>

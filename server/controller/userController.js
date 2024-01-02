@@ -1,12 +1,44 @@
 var Product = require('../models/product');
+var Cart = require('../models/cart');
+const axios = require('axios');
 const formatNumber = (price) => {
   return price.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'KES', // You can adjust the currency based on your requirement
     minimumFractionDigits: 2,
   });
 };
 
+exports.addToCart = async (req, res, next) =>  {
+  var productId = req.params.id;
+  var cart = new Cart(req.session.cart ? req.session.cart : {});
+  try {
+    const product = await Product.findById(productId);
+    if(!product){
+      return res.redirect('/');
+    }
+    cart.add(product, product.id);
+    req.session.cart = cart;
+    console.log(req.session.cart);
+    res.redirect('/');
+  } catch (err) {
+    return next(err);
+  }
+};
+exports.cart = async (req, res, next) => {
+  
+    if(!req.session.cart){
+      return res.render('shop/cart', {products: null});
+    }
+    var cart = new Cart(req.session.cart);
+    res.render('./shop/cart', {products: cart.generateArray(), formatNumber, totalPrice: cart.totalPrice});
+};
+exports.checkOut = async (req, res, next) => {
+
+    if(!req.session.cart){
+      return res.render('./shop/confirm', {products: null});
+    }
+    var cart = new Cart(req.session.cart);
+    res.render('./shop/confirm', {products: cart.generateArray(), formatNumber, totalPrice: cart.totalPrice});
+};
 exports.home = async (req, res, next) => {
   try {
     const products = await Product.find().exec();
@@ -22,8 +54,6 @@ exports.home = async (req, res, next) => {
     return next(err);
   }
 };
-
-
 
 exports.admin = async (req, res, next) => {
     res.render('./admin/admin');
@@ -52,7 +82,7 @@ exports.postProduct = async (req, res, next) => {
 
   try {
       await Product.create(newProduct);
-      res.redirect('/admin');
+      res.redirect('/admin/management');
   } catch (error) {
       console.log(error);
   }
@@ -69,28 +99,6 @@ exports.deleteStudent = async(req, res)=>{
     }
 
 };
-
-
-// Handle the form submission for editing a product
-// exports.editProduct = async (req, res) => {
-//   try {
-//     const productId = req.params.id;
-
-//     // Update the product based on the form data
-//     await Product.findByIdAndUpdate(productId, {
-//       imagePath: req.body.imagePath,
-//       productName: req.body.productName,
-//       price: req.body.price,
-//       instock: req.body.instock,
-//       category: req.body.category,
-//     });
-
-//     res.redirect('/admin'); // Redirect to the admin page after editing
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// };
 
 exports.viewProduct = async (req, res) => {
   try {

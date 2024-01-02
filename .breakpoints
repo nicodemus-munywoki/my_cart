@@ -11,9 +11,9 @@
     "server/controller/userController.js": [
       {
         "id": "e94ffcd2-9fb6-4d75-b56a-12699a571474",
-        "line": 38,
-        "version": 540,
-        "index": 949
+        "line": 111,
+        "version": 1896,
+        "index": 3565
       }
     ]
   }
